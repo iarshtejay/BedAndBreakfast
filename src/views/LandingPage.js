@@ -9,6 +9,7 @@ import CardContent from "@mui/material/CardContent";
 import { CardActionArea } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Food from "../components/Food";
+import TourPackages from "../components/TourPackages";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -17,7 +18,17 @@ const Dashboard = () => {
       <Grid container spacing={3}>
         {/* Upcoming Bookings */}
         <Grid item xs={12}>
+          <Typography variant={"h4"} m={3}>
+            Meals
+          </Typography>
           <Food />
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant={"h4"} m={3}>
+            Travel Packages
+          </Typography>
+
+          <TourPackages />
         </Grid>
         {/* Recent Bookings */}
         <Grid item xs={12}>

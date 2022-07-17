@@ -16,9 +16,7 @@ const Dashboard = () => {
   const [meals, setMeals] = useState([]);
   useEffect(() => {
     axios
-      .get(
-        "https://c3yio5z7d4.execute-api.us-east-1.amazonaws.com/dev/getmeals"
-      )
+      .get("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/tour")
       .then((res) => {
         console.log(res.data.Items);
         setMeals(res.data.Items);
@@ -34,13 +32,14 @@ const Dashboard = () => {
         <Card>
           <CardContent>
             <div className="d-flex justify-content-between">
-              <div>{meal.name}</div>
+              <div>{meal.tour_name}</div>
               <div>{meal.price}</div>
+              <div>{meal.places}</div>
               <div>
                 {" "}
-                qty: <input type="number" />
+                headCount: <input type="number" />
               </div>
-              <Button>Add To Cart</Button>
+              <Button>Buy</Button>
             </div>
           </CardContent>
         </Card>
