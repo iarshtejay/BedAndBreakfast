@@ -6,6 +6,11 @@ const routes = [
     name: "Dashboard",
     element: <Dashboard />,
   },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    element: <Dashboard />,
+  },
 ];
 
 export default routes;

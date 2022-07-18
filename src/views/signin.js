@@ -226,6 +226,9 @@ export default function SignIn() {
             >
               Sign in
             </Button>
+            <Typography type="body2">
+              Don't have an account? <a href="/register">Register</a>
+            </Typography>
             <Grid container>
               {" "}
               <Button onClick={clicked}> Register </Button>
