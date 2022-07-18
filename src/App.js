@@ -8,7 +8,7 @@ import SignIn from "./views/signin";
 import LandingPage from "./views/LandingPage";
 import Registration from "./views/registration";
 import ForgotPassword from "./pages/ForgotPassword";
-
+import Register from "./pages/Register";
 function App() {
   const mdTheme = createTheme({});
 
@@ -16,20 +16,15 @@ function App() {
     <ThemeProvider theme={mdTheme}>
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/" element={<SignIn />}></Route> */}
-          <Route path="/login" element={<SignIn />}></Route>
-          <Route path="/register" element={<Registration />}></Route>
-          <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
           <Route path="/" element={<LandingPage />}></Route>
-          <Route path="/dashboard" element={<Dashboard />}>
-            {routes.map((props) => (
-              <Route
-                key={props.name}
-                path={props.path}
-                element={props.element}
-              />
-            ))}
-          </Route>
+          {/* <Route path="/login" element={<SignIn />}></Route> */}
+          {/* <Route path="/register" element={<Registration />}></Route> */}
+
+          <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
+          {routes.map((props) => (
+            <Route key={props.name} path={props.path} element={props.element} />
+          ))}
+          {/* </Route> */}
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

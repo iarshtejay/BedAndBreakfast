@@ -17,19 +17,16 @@ import { collection, addDoc } from "firebase/firestore";
 import AWS from "aws-sdk";
 import { Alert } from "react-bootstrap";
 import { useNavigate, Navigate } from "react-router-dom";
+import AWS_CONFIG from "../config";
+import axios from "axios";
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
-const config = {
-  region: "us-east-1",
-  accessKeyId: "AKIAY6643BOPECCB54NF",
-  secretAccessKey: "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",
-};
 AWS.config.update({
-  region: config.region,
+  region: AWS_CONFIG.region,
   credentials: new AWS.Credentials(
-    config.accessKeyId,
-    config.secretAccessKey,
-    config.sessionToken
+    AWS_CONFIG.accessKeyId,
+    AWS_CONFIG.secretAccessKey,
+    AWS_CONFIG.sessionToken
   ),
 });
 
@@ -71,6 +68,9 @@ export default function Registration() {
     } else if (!/^[ A-Za-z0-9_@./#&+-]*$/.test(values.get("password"))) {
       errors.password = "Only special characters and alphanumeric is allowed!";
     }
+    if (values.get("confirmPassword") !== values.get("password")) {
+      errors.confirmPassword = "Passwords do not match";
+    }
     if (!/^[A-Za-z0-9]+$/.test(values.get("SecurityAnswerOne"))) {
       errors.answer1 = "Only Alphanumeric is allowed";
     }
@@ -84,7 +84,7 @@ export default function Registration() {
     }
 
     if (!/^[0-9]+$/.test(values.get("ceasercipher"))) {
-      errors.answer3 = "Only Alphanumeric is allowed";
+      errors.caesarcipher = "Only Numeric values are allowed";
     }
 
     return errors;
@@ -93,12 +93,12 @@ export default function Registration() {
   const handleSubmit = (event) => {
     event.preventDefault();
     //  Getting the form Data
-
     const UserData = new FormData(event.currentTarget);
     error = validateFields(UserData);
 
     if (Object.keys(error).length !== 0) {
       console.log(error);
+
       return null;
     }
 
@@ -277,6 +277,17 @@ export default function Registration() {
             />
             {error.password && <p>{error.password}</p>}
 
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              id="confirmPassword"
+              autoComplete="current-password"
+            />
+            {error.confirmPassword && <p>{error.confirmPassword}</p>}
             <Button
               type="submit"
               fullWidth
