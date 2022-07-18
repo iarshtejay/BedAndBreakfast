@@ -26,11 +26,7 @@ const config = {
 };
 AWS.config.update({
   region: config.region,
-  credentials: new AWS.Credentials(
-    config.accessKeyId,
-    config.secretAccessKey,
-    config.sessionToken
-  ),
+  credentials: new AWS.Credentials(config.accessKeyId, config.secretAccessKey),
 });
 
 const poolData = {
@@ -150,6 +146,10 @@ export default function Registration() {
         console.log(data);
       }
     });
+    navigate("/login");
+  };
+
+  const clicked = () => {
     navigate("/login");
   };
 
@@ -286,12 +286,7 @@ export default function Registration() {
               Register
             </Button>
             <Grid container>
-              <Grid item xs></Grid>
-              <Grid item>
-                {/* <Navigate to="/signin" replace={true} >
-                  {"Already Have An Account? Sign In"}
-                </Navigate> */}
-              </Grid>
+              <Button onClick={clicked}> Sign in </Button>
             </Grid>
           </Box>
         </Box>

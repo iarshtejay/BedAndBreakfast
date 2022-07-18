@@ -17,6 +17,8 @@ export const Dashboard = () => {
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             EMAIL REGISTERED : {location.state.email_id}
+            <br></br>
+            Cognito user : {location.state.cognito_name}
           </Typography>
         </CardContent>
       </CardActionArea>

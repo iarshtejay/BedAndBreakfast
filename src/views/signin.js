@@ -71,13 +71,20 @@ export default function SignIn() {
     user.authenticateUser(userDetails, {
       onSuccess: (data) => {
         console.log(data);
+        navigate("/dashboard", {
+          state: {
+            cognito_name: data.idToken.payload["cognito:username"],
+            email_id: data.idToken.payload["email"],
+          },
+        });
+        console.log(data);
         getusers();
         fireuser.map((user) => {
           console.log(user);
           if (user.email === UserData.get("email")) {
             axios
               .get(
-                "https://us-central1-serverless-2-352903.cloudfunctions.net/caeser?" +
+                "https://us-central1-csci5410-assignmnet4.cloudfunctions.net/group-18?" +
                   "text=ABC&" +
                   `key=${user.ceasercipherKey}`
               )
@@ -139,6 +146,10 @@ export default function SignIn() {
         }
       },
     });
+  };
+
+  const clicked = () => {
+    navigate("/login");
   };
 
   return (
@@ -216,12 +227,8 @@ export default function SignIn() {
               Sign in
             </Button>
             <Grid container>
-              <Grid item xs></Grid>
-              <Grid item>
-                {/* <Navigate to="/registration" replace={true} >
-                    {"Don't Have An Account? Sign up"}
-            </Navigate> */}
-              </Grid>
+              {" "}
+              <Button onClick={clicked}> Register </Button>
             </Grid>
           </Box>
         </Box>
