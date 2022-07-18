@@ -8,6 +8,7 @@ import Bookings from "../components/Bookings";
 import CardContent from "@mui/material/CardContent";
 import { CardActionArea } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import Visualization from "../components/Visualization";
 
 export const Dashboard = () => {
   const location = useLocation();
@@ -17,7 +18,8 @@ export const Dashboard = () => {
         <CardContent>
           {/* <Typography gutterBottom variant="h5" component="div">
             EMAIL REGISTERED : {location.state.email_id}
-          </Typography> */}
+          </Typo
+          graphy> */}
         </CardContent>
       </CardActionArea>
       <Grid container spacing={3}>
@@ -39,6 +41,11 @@ export const Dashboard = () => {
           <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
             <Bookings />
           </Paper>
+          <Grid item xs={12}>
+          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+            <Visualization />
+          </Paper>
+        </Grid>
         </Grid>
       </Grid>
     </Container>
