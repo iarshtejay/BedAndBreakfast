@@ -288,9 +288,6 @@ export default function Registration() {
             <Typography type="body2">
               Already have an account? <a href="/login">Login</a>
             </Typography>
-            <Grid container>
-              <Button onClick={clicked}> Sign in </Button>
-            </Grid>
           </Box>
         </Box>
       </Container>
