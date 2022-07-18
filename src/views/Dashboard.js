@@ -14,7 +14,7 @@ export const Dashboard = () => {
   const location = useLocation();
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <CardActionArea>
+      {/* <CardActionArea>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             EMAIL REGISTERED : {location.state.email_id}
@@ -22,7 +22,7 @@ export const Dashboard = () => {
             Cognito user : {location.state.cognito_name}
           </Typography>
         </CardContent>
-      </CardActionArea>
+      </CardActionArea> */}
       <Grid container spacing={3}>
         {/* Upcoming Bookings
         <Grid item xs={12}>

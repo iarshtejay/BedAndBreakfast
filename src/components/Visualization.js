@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import Title from "./Title";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function preventDefault(event) {
   event.preventDefault();
@@ -12,18 +13,23 @@ function preventDefault(event) {
 
 export default function Visualization() {
   let navigate = useNavigate();
+  const waitMessage = "Generating visualizations, please wait..."
+
+  const [loaded, setloaded] = React.useState(false);
 
   const viewVisualization = async (event) => {
     const visualizationAPIEndPoint = "https://2djbk4n2tj.execute-api.us-east-1.amazonaws.com/dev/visualization";
+    setloaded(true);
     await axios
       .get(visualizationAPIEndPoint, {})
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
-        if (res.data.statusCode == 200) {
-          console.log("res.data.statusCode", res.data.statusCode);
-          console.log("res.data.body", res.data.body);
+
+        setloaded(false);
+        if (res.status == 200) {
+          console.log("res.data", res.data);
           navigate("/visualization");
-        } else if (res.data.statusCode != 200) {
+        } else if (res.status != 200) {
           navigate("/login");
         }
       })
@@ -35,13 +41,15 @@ export default function Visualization() {
   return (
     <React.Fragment>
       <Title>Visualization</Title>
-      <Typography component="p" variant="h4">
+      {/* <Typography component="p" variant="h4">
         Click below to see visualizations
-      </Typography>
+      </Typography> */}
       <div>
-        <Button color="primary" href="#" onClick={viewVisualization}>
-          Visualizations
+        <Button color="primary" variant="contained" onClick={viewVisualization}>
+          Click here
         </Button>
+        <p style={{marginTop:"5px"}}>{loaded && <CircularProgress />}</p>
+        <p>{loaded && waitMessage}</p>
       </div>
     </React.Fragment>
   );
