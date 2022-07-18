@@ -16,11 +16,7 @@ export default function Visualization() {
   const viewVisualization = async (event) => {
     const visualizationAPIEndPoint = "https://2djbk4n2tj.execute-api.us-east-1.amazonaws.com/dev/visualization";
     await axios
-      .get(visualizationAPIEndPoint, {
-        headers: {
-          headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": true },
-        },
-      })
+      .get(visualizationAPIEndPoint, {})
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
         if (res.data.statusCode == 200) {

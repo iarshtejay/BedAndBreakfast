@@ -16,14 +16,15 @@ export const Dashboard = () => {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <CardActionArea>
         <CardContent>
-          {/* <Typography gutterBottom variant="h5" component="div">
+          <Typography gutterBottom variant="h5" component="div">
             EMAIL REGISTERED : {location.state.email_id}
-          </Typo
-          graphy> */}
+            <br></br>
+            Cognito user : {location.state.cognito_name}
+          </Typography>
         </CardContent>
       </CardActionArea>
       <Grid container spacing={3}>
-        {/* Upcoming Bookings */}
+        {/* Upcoming Bookings
         <Grid item xs={12}>
           <Paper
             sx={{
