@@ -9,6 +9,7 @@ import LandingPage from "./views/LandingPage";
 import Registration from "./views/registration";
 import ForgotPassword from "./pages/ForgotPassword";
 import VisualizationCharts from "./pages/VisualizationCharts";
+import Register from "./pages/Register";
 
 function App() {
   const mdTheme = createTheme({});
@@ -24,10 +25,7 @@ function App() {
           <Route path="/" element={<LandingPage />}></Route>
           <Route path="/dashboard" element={<Dashboard />}>
             {routes.map((props) => (
-              <Route
-                path={props.path}
-                element={props.element}
-              />
+              <Route path={props.path} element={props.element} />
             ))}
           </Route>
           <Route path="/visualization" element={<VisualizationCharts />}></Route>
