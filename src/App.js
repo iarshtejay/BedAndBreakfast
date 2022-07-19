@@ -8,6 +8,7 @@ import SignIn from "./views/signin";
 import LandingPage from "./views/LandingPage";
 import Registration from "./views/registration";
 import ForgotPassword from "./pages/ForgotPassword";
+import VisualizationCharts from "./pages/VisualizationCharts";
 
 function App() {
   const mdTheme = createTheme({});
@@ -24,12 +25,12 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />}>
             {routes.map((props) => (
               <Route
-                key={props.name}
                 path={props.path}
                 element={props.element}
               />
             ))}
           </Route>
+          <Route path="/visualization" element={<VisualizationCharts />}></Route>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

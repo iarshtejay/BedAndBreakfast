@@ -8,12 +8,13 @@ import Bookings from "../components/Bookings";
 import CardContent from "@mui/material/CardContent";
 import { CardActionArea } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import Visualization from "../components/Visualization";
 
 export const Dashboard = () => {
   const location = useLocation();
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <CardActionArea>
+      {/* <CardActionArea>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             EMAIL REGISTERED : {location.state.email_id}
@@ -21,7 +22,7 @@ export const Dashboard = () => {
             Cognito user : {location.state.cognito_name}
           </Typography>
         </CardContent>
-      </CardActionArea>
+      </CardActionArea> */}
       <Grid container spacing={3}>
         {/* Upcoming Bookings
         <Grid item xs={12}>
@@ -41,6 +42,11 @@ export const Dashboard = () => {
           <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
             <Bookings />
           </Paper>
+          <Grid item xs={12}>
+          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+            <Visualization />
+          </Paper>
+        </Grid>
         </Grid>
       </Grid>
     </Container>
