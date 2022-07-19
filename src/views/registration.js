@@ -52,7 +52,7 @@ export default function Registration() {
     if (values.get("lastName") === "") {
       errors.lastname = "Last name Required!";
     } else if (!/^[A-Za-z]+$/.test(values.get("lastName"))) {
-      errors.lastname = "First name can only have characters!";
+      errors.lastname = "Last name can only have characters!";
     }
     if (values.get("email") === "") {
       errors.email = "Email Required! ";
@@ -62,25 +62,6 @@ export default function Registration() {
     // }
     if (values.get("password") === "") {
       errors.password = "password is required";
-    } else if (values.get("password").length < 8) {
-      errors.password = "password length is less then 8";
-    } else if (!/^[ A-Za-z0-9_@./#&+-]*$/.test(values.get("password"))) {
-      errors.password = "Only special characters and alphanumeric is allowed!";
-    }
-    if (!/^[A-Za-z0-9]+$/.test(values.get("SecurityAnswerOne"))) {
-      errors.answer1 = "Only Alphanumeric is allowed";
-    }
-
-    if (!/^[A-Za-z0-9]+$/.test(values.get("SecurityAnswerTwo"))) {
-      errors.answer2 = "Only Alphanumeric is allowed";
-    }
-
-    if (!/^[A-Za-z0-9]+$/.test(values.get("SecurityAnswerThree"))) {
-      errors.answer3 = "Only Alphanumeric is allowed";
-    }
-
-    if (!/^[0-9]+$/.test(values.get("ceasercipher"))) {
-      errors.answer3 = "Only Alphanumeric is allowed";
     }
 
     return errors;
@@ -116,7 +97,11 @@ export default function Registration() {
 
     // Storing the infromation in firbase
     const userCol = collection(db, "userDetails");
+    console.log(userCol);
     var ceaserKey = parseInt(UserData.get("ceasercipher")) % 26;
+    console.log(UserData.get("SecurityAnswerOne"));
+    console.log(UserData.get("SecurityAnswerTwo"));
+    console.log(UserData.get("SecurityAnswerThree"));
     addDoc(userCol, {
       email: UserData.get("email"),
       Question1: UserData.get("SecurityAnswerOne"),
@@ -124,7 +109,6 @@ export default function Registration() {
       Question3: UserData.get("SecurityAnswerThree"),
       ceasercipherKey: ceaserKey,
     });
-    UserData.get("email");
 
     // Storing in DynamoDB
     var dynamo = new AWS.DynamoDB({ apiVersion: "2012-08-10" });

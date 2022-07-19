@@ -37,6 +37,13 @@ var error = {};
 export default function SignIn() {
   let navigate = useNavigate();
 
+  const config = {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    },
+  };
+
   var Question1 = "What’s your favorite Movie?";
   var Question2 = "What’s your favorite Food?";
   var Question3 = "What’s your favorite Person?";
@@ -70,31 +77,23 @@ export default function SignIn() {
     };
     user.authenticateUser(userDetails, {
       onSuccess: (data) => {
-        console.log(data);
-        navigate("/dashboard", {
-          state: {
-            cognito_name: data.idToken.payload["cognito:username"],
-            email_id: data.idToken.payload["email"],
-          },
-        });
-        console.log(data);
         getusers();
         fireuser.map((user) => {
-          console.log(user);
           if (user.email === UserData.get("email")) {
+            console.log("User Logged");
+            console.log(user.ceasercipherKey);
             axios
               .get(
                 "https://us-central1-csci5410-assignmnet4.cloudfunctions.net/group-18?" +
                   "text=ABC&" +
-                  `key=${user.ceasercipherKey}`
+                  `key=${user.ceasercipherKey}`,
+                config
               )
               .then((resp) => {
+                console.log(resp.data.output);
                 setUserCipher((data) => resp.data.output);
               });
-
-            console.log(UserData.get("ceaser").toString());
-            console.log(`Question${RandomNum}`);
-
+            console.log(UserCipher.toString());
             if (`Question${RandomNum}` === "Question1") {
               if (
                 user.Question1.toString() ===
@@ -104,9 +103,12 @@ export default function SignIn() {
                 console.log(UserData.get("ceaser").toString());
                 navigate("/dashboard", {
                   state: {
-                    email_id: data.idToken.payload["cognito:username"],
+                    cognito_name: data.idToken.payload["cognito:username"],
+                    email_id: data.idToken.payload["email"],
                   },
                 });
+              } else {
+                alert("Not a valid answer or cipher is not correct");
               }
             } else if (`Question${RandomNum}` === "Question2") {
               if (
@@ -117,9 +119,12 @@ export default function SignIn() {
                 console.log(UserData.get("ceaser").toString());
                 navigate("/dashboard", {
                   state: {
-                    email_id: data.idToken.payload["cognito:username"],
+                    cognito_name: data.idToken.payload["cognito:username"],
+                    email_id: data.idToken.payload["email"],
                   },
                 });
+              } else {
+                alert("Not a valid answer or cipher is not correct");
               }
             } else {
               if (
@@ -129,9 +134,12 @@ export default function SignIn() {
               ) {
                 navigate("/dashboard", {
                   state: {
-                    email_id: data.idToken.payload["cognito:username"],
+                    cognito_name: data.idToken.payload["cognito:username"],
+                    email_id: data.idToken.payload["email"],
                   },
                 });
+              } else {
+                alert("Not a valid answer or cipher is not correct");
               }
             }
           }
