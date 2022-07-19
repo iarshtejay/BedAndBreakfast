@@ -23,11 +23,14 @@ function App() {
           <Route path="/register" element={<Registration />}></Route>
           <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
           <Route path="/" element={<LandingPage />}></Route>
-          <Route path="/dashboard" element={<Dashboard />}>
+          {/* <Route path="/dashboard" element={<Dashboard />}>
             {routes.map((props) => (
               <Route path={props.path} element={props.element} />
             ))}
-          </Route>
+          </Route> */}
+          {routes.map((props) => (
+            <Route key={props.name} path={props.path} element={props.element} />
+          ))}
           <Route path="/visualization" element={<VisualizationCharts />}></Route>
         </Routes>
       </BrowserRouter>

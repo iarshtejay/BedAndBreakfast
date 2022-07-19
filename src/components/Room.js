@@ -10,18 +10,40 @@ import CardContent from "@mui/material/CardContent";
 import { CardActionArea, Card, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const Dashboard = () => {
+const Room = () => {
   const location = useLocation();
-  const [meals, setMeals] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  let navigate = useNavigate();
+
+  const bookRoom = async (event) => {
+    const bookRoomAPIEndPoint = "https://4enm1lvle2.execute-api.us-east-1.amazonaws.com/dev/booktour";
+    //setloaded(true);
+    await axios
+      .post(bookRoomAPIEndPoint, {})
+      .then((res) => {
+        console.log("Res: " + JSON.stringify(res));
+
+        //setloaded(false);
+        if (res.status == 200) {
+          console.log("res.data", res.data);
+          navigate("/visualization");
+        } else if (res.status != 200) {
+          navigate("/login");
+        }
+      })
+      .catch((err) => {
+        console.log("Err", err);
+      });
+  };
+
   useEffect(() => {
     axios
-      .get(
-        "https://c3yio5z7d4.execute-api.us-east-1.amazonaws.com/dev/getmeals"
-      )
+      .get("https://h7ppg1ry82.execute-api.us-east-1.amazonaws.com/dev/getrooms")
       .then((res) => {
-        console.log(res.data.Items);
-        setMeals(res.data.Items);
+        console.log("Rooms- ", res.data.rooms);
+        setRooms(res.data.rooms);
       })
       .catch((err) => {
         console.log("err", err);
@@ -33,19 +55,21 @@ const Dashboard = () => {
       <Card>
         <CardContent>
           <div className="d-flex justify-content-between">
-            <div style={{ minWidth: "30%", fontWeight:"bold" }}>Food</div>
+            <div style={{ minWidth: "30%", fontWeight:"bold" }}>Room number</div>
             <div style={{ minWidth: "30%", fontWeight:"bold" }}>Price</div>
+            <div style={{ minWidth: "30%", fontWeight:"bold" }}>Type</div>
             <div style={{ minWidth: "30%", fontWeight:"bold" }}>Action</div>
           </div>
         </CardContent>
       </Card>
-      {meals.map((meal) => (
+      {rooms.map((room) => (
         <Card>
           <CardContent>
             <div className="d-flex justify-content-between">
-              <div style={{ minWidth: "30%"}}>{meal.name}</div>
-              <div style={{ minWidth: "30%"}}>{meal.price}</div>
-              <Button style={{ minWidth: "30%"}}>Order Now</Button>
+              <div style={{ minWidth: "30%" }}>{room.number}</div>
+              <div style={{ minWidth: "30%" }}>{room.price}</div>
+              <div style={{ minWidth: "30%" }}>{room.type}</div>
+              <Button onClick={bookRoom}>Book Now</Button>
             </div>
           </CardContent>
         </Card>
@@ -73,4 +97,4 @@ const Dashboard = () => {
     </Container>
   );
 };
-export default Dashboard;
+export default Room;
