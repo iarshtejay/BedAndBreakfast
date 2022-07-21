@@ -28,17 +28,21 @@ const Tour = () => {
       inputPlaceholder: "Enter your total headcount",
     });
 
-    param["head_count"] = headcount;
-    param["user_id"] = "123";
+    param.head_count = headcount;
+    param.user_id = 123;
     console.log(param);
-    const bookTourAPIEndPoint =
-      "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/tour";
+    //param = JSON.stringify({ tour_id: 1, tour_name: "alberta", head_count: 5, user_id: 42 });
+    const param_JSON = JSON.stringify(param);
+    console.log(param_JSON);
+    const bookTourAPIEndPoint = "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/tour";
     //setloaded(true);
     await axios
       .post(
         bookTourAPIEndPoint,
-        { param },
-        { headers: { "Content-Type": "application/json" } }
+        param_JSON,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
       )
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
@@ -57,9 +61,7 @@ const Tour = () => {
 
   useEffect(() => {
     axios
-      .get(
-        "https://4enm1lvle2.execute-api.us-east-1.amazonaws.com/dev/alltours"
-      )
+      .get("https://4enm1lvle2.execute-api.us-east-1.amazonaws.com/dev/alltours")
       .then((res) => {
         console.log(res.data.Items);
         setTours(res.data.Items);
