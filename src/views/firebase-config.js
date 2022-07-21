@@ -1,6 +1,8 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-
+// import { initializeApp } from "firebase/app";
+// import { getFirestore } from "firebase/firestore";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyAt4irWYKPMFcwfhra-rA-l08PYdXIUbFk",
   authDomain: "serverless-18.firebaseapp.com",
@@ -11,5 +13,13 @@ const firebaseConfig = {
   measurementId: "G-56T9FQTV0H",
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-export const db = getFirestore(firebaseApp);
+firebase.initializeApp(firebaseConfig);
+
+let db = firebase.firestore();
+
+export default {
+  db,
+  firebase,
+};
+
+// export const db = getFirestore(firebaseApp);

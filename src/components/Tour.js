@@ -31,10 +31,15 @@ const Tour = () => {
     param["head_count"] = headcount;
     param["user_id"] = "123";
     console.log(param);
-    const bookTourAPIEndPoint = "https://4enm1lvle2.execute-api.us-east-1.amazonaws.com/dev/booktour";
+    const bookTourAPIEndPoint =
+      "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/tour";
     //setloaded(true);
     await axios
-      .post(bookTourAPIEndPoint, { param }, { headers: { "Content-Type": "application/json" } })
+      .post(
+        bookTourAPIEndPoint,
+        { param },
+        { headers: { "Content-Type": "application/json" } }
+      )
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
 
@@ -52,7 +57,9 @@ const Tour = () => {
 
   useEffect(() => {
     axios
-      .get("https://4enm1lvle2.execute-api.us-east-1.amazonaws.com/dev/alltours")
+      .get(
+        "https://4enm1lvle2.execute-api.us-east-1.amazonaws.com/dev/alltours"
+      )
       .then((res) => {
         console.log(res.data.Items);
         setTours(res.data.Items);
@@ -81,7 +88,16 @@ const Tour = () => {
               <div style={{ minWidth: "30%" }}>{tour.places}</div>
               <div style={{ minWidth: "30%" }}>{tour.price}</div>
               <div style={{ minWidth: "30%" }}>{tour.tour_name}</div>
-              <Button onClick={(event) => bookTour(event, { tour_id: tour.id, tour_name: tour.tour_name })}>Book Now</Button>
+              <Button
+                onClick={(event) =>
+                  bookTour(event, {
+                    tour_id: tour.id,
+                    tour_name: tour.tour_name,
+                  })
+                }
+              >
+                Book Now
+              </Button>
             </div>
           </CardContent>
         </Card>

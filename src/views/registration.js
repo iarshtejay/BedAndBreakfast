@@ -11,19 +11,24 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CognitoUserPool } from "amazon-cognito-identity-js";
-import { db } from "./firebase-config";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  CognitoUserAttribute,
+  CognitoUserPool,
+} from "amazon-cognito-identity-js";
+import firebase from "./firebase-config";
 import AWS from "aws-sdk";
-import { Alert } from "react-bootstrap";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AWS_CONFIG from "../config";
 import axios from "axios";
 window.Buffer = window.Buffer || require("buffer").Buffer;
-
+const db = firebase.db;
 AWS.config.update({
   region: AWS_CONFIG.region,
-  credentials: new AWS.Credentials(AWS_CONFIG.accessKeyId, AWS_CONFIG.secretAccessKey, AWS_CONFIG.sessionToken),
+  credentials: new AWS.Credentials(
+    AWS_CONFIG.accessKeyId,
+    AWS_CONFIG.secretAccessKey,
+    AWS_CONFIG.sessionToken
+  ),
 });
 
 const poolData = {
@@ -38,6 +43,46 @@ var error = {};
 
 export default function Registration() {
   let navigate = useNavigate();
+
+  const signUpCognito = async (formData) => {
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    UserPool.signUp(email, password, [], null, async (err, data) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      const userData = {
+        id: data.userSub,
+        email: formData.get("email"),
+        Password: formData.get("password"),
+        First_Name: formData.get("firstName"),
+        Last_Name: formData.get("lastName"),
+        Phone: formData.get("Phone"),
+      };
+      const email = formData.get("email");
+      const securityData = {
+        Question1: formData.get("SecurityAnswerOne"),
+        Question2: formData.get("SecurityAnswerTwo"),
+        Question3: formData.get("SecurityAnswerThree"),
+        ceaserCipherKey: parseInt(formData.get("ceasercipher")) % 26,
+      };
+      try {
+        const [_, __] = await Promise.all([
+          axios.post(
+            "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/user",
+            userData
+          ),
+          db.collection("userDetails").doc(email).set(securityData),
+        ]);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  };
+
   const validateFields = (values) => {
     const errors = {};
 
@@ -86,10 +131,10 @@ export default function Registration() {
     return errors;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    //  Getting the form Data
     const UserData = new FormData(event.currentTarget);
+    console.log(UserData.values());
     error = validateFields(UserData);
 
     if (Object.keys(error).length !== 0) {
@@ -97,54 +142,7 @@ export default function Registration() {
 
       return null;
     }
-
-    //  User Registration in Cognito
-    UserPool.signUp(UserData.get("email"), UserData.get("password"), [], null, (err, data) => {
-      if (err) {
-        Alert("Either Email is already valid or password is not in valid format!");
-        return null;
-      }
-    });
-
-    // Storing the infromation in firbase
-    const userCol = collection(db, "userDetails");
-    console.log(userCol);
-    var ceaserKey = parseInt(UserData.get("ceasercipher")) % 26;
-    console.log(UserData.get("SecurityAnswerOne"));
-    console.log(UserData.get("SecurityAnswerTwo"));
-    console.log(UserData.get("SecurityAnswerThree"));
-    addDoc(userCol, {
-      email: UserData.get("email"),
-      Question1: UserData.get("SecurityAnswerOne"),
-      Question2: UserData.get("SecurityAnswerTwo"),
-      Question3: UserData.get("SecurityAnswerThree"),
-      ceasercipherKey: ceaserKey,
-    });
-
-    // Storing in DynamoDB
-    var dynamo = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
-    var Dynamo_Params = {
-      TableName: "UserRegistration",
-      Item: {
-        email: { S: UserData.get("email") },
-        First_Name: { S: UserData.get("firstName") },
-        Last_Name: { S: UserData.get("lastName") },
-        Password: { S: UserData.get("password") },
-        Phone: { N: UserData.get("Phone") },
-      },
-    };
-
-    dynamo.putItem(Dynamo_Params, function (err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(data);
-      }
-    });
-    navigate("/login");
-  };
-
-  const clicked = () => {
+    signUpCognito(UserData);
     navigate("/login");
   };
 
@@ -166,37 +164,129 @@ export default function Registration() {
           <Typography component="h1" variant="h5">
             Register
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField margin="normal" required fullWidth name="firstName" label="First Name" type="firstName" id="firstName" />
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="firstName"
+              label="First Name"
+              type="firstName"
+              id="firstName"
+            />
 
             {error.firstname && <p>{error.firstname}</p>}
-            <TextField margin="normal" required fullWidth name="lastName" label="Last Name" type="lastName" id="lastName" />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="lastName"
+              label="Last Name"
+              type="lastName"
+              id="lastName"
+            />
 
             {error.lastname && <p>{error.lastname}</p>}
-            <TextField margin="normal" required fullWidth id="email" label="Email Address" name="email" autoFocus />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoFocus
+            />
 
             {error.email && <p>{error.email}</p>}
-            <TextField margin="normal" required fullWidth name="Phone" label="Phone" type="Phone" id="Phone" />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="Phone"
+              label="Phone"
+              type="Phone"
+              id="Phone"
+            />
 
             {error.phone && <p>{error.phone}</p>}
-            <TextField margin="normal" required fullWidth name="SecurityAnswerOne" label="What’s your favorite movie? (Security Question 1)" type="SecurityAnswerOne" id="SecurityAnswerOne" />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="SecurityAnswerOne"
+              label="What’s your favorite movie? (Security Question 1)"
+              type="SecurityAnswerOne"
+              id="SecurityAnswerOne"
+            />
             {error.answer1 && <p>{error.answer1}</p>}
 
-            <TextField margin="normal" required fullWidth name="SecurityAnswerTwo" label="What’s your favorite Food? (Security Question 2)" type="SecurityAnswerTwo" id="SecurityAnswerTwo" />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="SecurityAnswerTwo"
+              label="What’s your favorite Food? (Security Question 2)"
+              type="SecurityAnswerTwo"
+              id="SecurityAnswerTwo"
+            />
             {error.answer2 && <p>{error.answer2}</p>}
 
-            <TextField margin="normal" required fullWidth name="SecurityAnswerThree" label="What’s your favorite person? (Security Question 3)" type="SecurityAnswerThree" id="SecurityAnswerThree" />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="SecurityAnswerThree"
+              label="What’s your favorite person? (Security Question 3)"
+              type="SecurityAnswerThree"
+              id="SecurityAnswerThree"
+            />
 
             {error.answer3 && <p>{error.answer3}</p>}
-            <Number margin="normal" required fullWidth name="ceasercipher" label="ceasercipher key" type="ceasercipher" id="ceasercipher" />
+            <Number
+              margin="normal"
+              required
+              fullWidth
+              name="ceasercipher"
+              label="ceasercipher key"
+              type="ceasercipher"
+              id="ceasercipher"
+            />
             {error.ceaser && <p>{error.ceaser}</p>}
 
-            <TextField margin="normal" required fullWidth name="password" label="Password" type="password" id="password" autoComplete="current-password" />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
             {error.password && <p>{error.password}</p>}
 
-            <TextField margin="normal" required fullWidth name="confirmPassword" label="Confirm Password" type="password" id="confirmPassword" autoComplete="current-password" />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              id="confirmPassword"
+              autoComplete="current-password"
+            />
             {error.confirmPassword && <p>{error.confirmPassword}</p>}
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
               Register
             </Button>
             <Typography type="body2">
