@@ -9,9 +9,11 @@ import CardContent from "@mui/material/CardContent";
 import { CardActionArea } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Visualization from "../components/Visualization";
+import ReportGeneration from "../components/ReportGeneration";
 
 export const Dashboard = () => {
   const location = useLocation();
+  let currentUser = localStorage.getItem("BB_USER");
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       {/* <CardActionArea>
@@ -43,10 +45,13 @@ export const Dashboard = () => {
             <Bookings />
           </Paper>
           <Grid item xs={12}>
-          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-            <Visualization />
-          </Paper>
-        </Grid>
+            <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+              <Visualization />
+            </Paper>
+            <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+              <ReportGeneration />
+            </Paper>
+          </Grid>
         </Grid>
       </Grid>
     </Container>

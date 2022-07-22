@@ -16,6 +16,7 @@ import LandingPage from "./views/LandingPage";
 import Registration from "./views/registration";
 import ForgotPassword from "./pages/ForgotPassword";
 import VisualizationCharts from "./pages/VisualizationCharts";
+import Reports from "./pages/Reports";
 import Register from "./pages/Register";
 import { AuthContext, useAuth } from "./context";
 
@@ -50,6 +51,10 @@ function App() {
             <Route
               path="/visualization"
               element={<VisualizationCharts />}
+            ></Route>
+            <Route
+              path="/reports"
+              element={<Reports />}
             ></Route>
           </Routes>
         </BrowserRouter>

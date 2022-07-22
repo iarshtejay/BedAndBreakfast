@@ -18,6 +18,11 @@ const Tour = () => {
   const [tours, setTours] = useState([]);
   let navigate = useNavigate();
 
+  let timestamp = new Date();
+
+  let currentUser = JSON.parse(localStorage.getItem("BB_USER"));
+  console.log("Inside Tour booking for user: ", currentUser.email);
+
   const [tourDetails, setTourDetails] = useState([]);
 
   const bookTour = async (event, param) => {
@@ -37,26 +42,41 @@ const Tour = () => {
     const bookTourAPIEndPoint = "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/tour";
     //setloaded(true);
     await axios
-      .post(
-        bookTourAPIEndPoint,
-        param_JSON,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      )
+      .post(bookTourAPIEndPoint, param_JSON, {
+        headers: { "Content-Type": "application/json" },
+      })
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
-
+        Swal.fire("Your request for the tour booking is successful");
         //setloaded(false);
         if (res.status == 200) {
           console.log("res.data", res.data);
         } else if (res.status != 200) {
-          navigate("/login");
+          navigate("/");
         }
       })
       .catch((err) => {
         console.log("Err", err);
       });
+
+      let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
+      let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
+      let param_event = { event_type: "Tour booking", user_email: currentUser.email, timestamp: currentTime, date: currentDate };
+      let paramJSON = JSON.stringify(param_event);
+      console.log(paramJSON);
+      await axios
+        .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate", paramJSON, {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            console.log("Logging tour booking event");
+          } else if (res.status != 200) {
+          }
+        })
+        .catch((err) => {
+          console.log("Err", err);
+        });
   };
 
   useEffect(() => {

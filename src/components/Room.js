@@ -16,12 +16,16 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TextField from "@mui/material/TextField";
+import Swal from "sweetalert2";
 
 const Room = () => {
   const location = useLocation();
   const [rooms, setRooms] = useState([]);
   let navigate = useNavigate();
+  let timestamp = new Date();
 
+  let currentUser = JSON.parse(localStorage.getItem("BB_USER"));
+  console.log("Inside Room booking for user: ", currentUser.email);
   const [checkIn, setCheckIn] = useState(new Date());
   const [checkOut, setCheckOut] = useState(new Date());
 
@@ -37,7 +41,7 @@ const Room = () => {
   const bookRoom = async (event, param) => {
     const bookRoomAPIEndPoint = "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/rooms/bookroom";
     //setloaded(true);
-    param.user_id = "123";
+    param.user_id = currentUser.user_id;
     param.check_in = checkIn;
     param.check_out = checkOut;
 
@@ -49,16 +53,35 @@ const Room = () => {
       })
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
-        //setloaded(false);
         if (res.status == 200) {
           console.log("res.data", res.data);
+          Swal.fire('Your request for room booking is successful from dates ' + checkIn + " to " + checkOut);
         } else if (res.status != 200) {
-          navigate("/login");
+          navigate("/");
         }
       })
       .catch((err) => {
         console.log("Err", err);
       });
+
+      let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
+      let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
+      let param_event = { event_type: "Room booking", user_email: currentUser.email, timestamp: currentTime, date: currentDate };
+      let paramJSON = JSON.stringify(param_event);
+      console.log(paramJSON);
+      await axios
+        .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate", paramJSON, {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            console.log("Logging room booking event");
+          } else if (res.status != 200) {
+          }
+        })
+        .catch((err) => {
+          console.log("Err", err);
+        });
   };
 
   useEffect(() => {
