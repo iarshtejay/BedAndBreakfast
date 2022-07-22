@@ -10,6 +10,9 @@ import CardContent from "@mui/material/CardContent";
 import { CardActionArea, Card, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { MealBookingToast } from "./ToastNotifications";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -64,7 +67,8 @@ const Dashboard = () => {
       })
       .then((res) => {
         if (res.status == 200) {
-          console.log("Logging Food order event");
+          console.log("Logging Food order event toast");
+          MealBookingToast()
         } else if (res.status != 200) {
         }
       })
@@ -129,6 +133,7 @@ const Dashboard = () => {
           </Paper>
         </Grid>
       </Grid> */}
+      <ToastContainer/>
     </Container>
   );
 };

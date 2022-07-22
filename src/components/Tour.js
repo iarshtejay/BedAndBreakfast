@@ -12,6 +12,8 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { TourBookingToast } from "./ToastNotifications";
+import { ToastContainer } from "react-toastify";
 
 const Tour = () => {
   const location = useLocation();
@@ -47,10 +49,10 @@ const Tour = () => {
       })
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
-        Swal.fire("Your request for the tour booking is successful");
         //setloaded(false);
         if (res.status == 200) {
           console.log("res.data", res.data);
+          TourBookingToast(param.tour_name)
         } else if (res.status != 200) {
           navigate("/");
         }
@@ -144,6 +146,7 @@ const Tour = () => {
           </Paper>
         </Grid>
       </Grid> */}
+      <ToastContainer/>
     </Container>
   );
 };
