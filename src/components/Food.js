@@ -68,7 +68,7 @@ const Dashboard = () => {
       .then((res) => {
         if (res.status == 200) {
           console.log("Logging Food order event toast");
-          MealBookingToast()
+          //MealBookingToast()
         } else if (res.status != 200) {
         }
       })

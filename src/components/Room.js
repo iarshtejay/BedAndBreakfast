@@ -19,6 +19,7 @@ import TextField from "@mui/material/TextField";
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from 'react-toastify';
 import { RoomBookingToast } from "../components/ToastNotifications"
+import { BookingRequests } from "../api/BookingRequests"
 
 const Room = () => {
   const location = useLocation();
@@ -39,8 +40,8 @@ const Room = () => {
     //console.log(event.target.value);
     setCheckOut(event);
   };
-//   console.log('type');
-//   console.log(typeof String(checkIn));
+  //   console.log('type');
+  //   console.log(typeof String(checkIn));
 
   const bookRoom = async (event, param) => {
     const bookRoomAPIEndPoint = "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/rooms/bookroom";
@@ -51,15 +52,13 @@ const Room = () => {
 
     const param_JSON = JSON.stringify(param);
     console.log(param_JSON);
-    await axios
-      .post(bookRoomAPIEndPoint, param_JSON, {
-        headers: { "Content-Type": "application/json" },
-      })
+
+    await BookingRequests.sendRequest('ROOM_SERVICE', param)
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
         if (res.status == 200) {
           console.log("res.data", res.data);
-          RoomBookingToast({check_in: String(checkIn).substring(4, 15), check_out:String(checkOut).substring(4, 15)})
+          RoomBookingToast({ check_in: String(checkIn).substring(4, 15), check_out: String(checkOut).substring(4, 15) })
           //Swal.fire("Your request for room booking is successful from dates " + String(checkIn).substring(4, 15) + " to " + String(checkOut).substring(4, 15));
         } else if (res.status != 200) {
           navigate("/");
@@ -166,7 +165,7 @@ const Room = () => {
           </Paper>
         </Grid>
       </Grid> */}
-      <ToastContainer/>
+      <ToastContainer />
     </Container>
   );
 };
