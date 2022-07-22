@@ -37,6 +37,8 @@ const Room = () => {
     //console.log(event.target.value);
     setCheckOut(event);
   };
+//   console.log('type');
+//   console.log(typeof String(checkIn));
 
   const bookRoom = async (event, param) => {
     const bookRoomAPIEndPoint = "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/rooms/bookroom";
@@ -55,7 +57,7 @@ const Room = () => {
         console.log("Res: " + JSON.stringify(res));
         if (res.status == 200) {
           console.log("res.data", res.data);
-          Swal.fire('Your request for room booking is successful from dates ' + checkIn + " to " + checkOut);
+          Swal.fire("Your request for room booking is successful from dates " + String(checkIn).substring(4, 15) + " to " + String(checkOut).substring(4, 15));
         } else if (res.status != 200) {
           navigate("/");
         }
@@ -64,24 +66,24 @@ const Room = () => {
         console.log("Err", err);
       });
 
-      let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
-      let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
-      let param_event = { event_type: "Room booking", user_email: currentUser.email, timestamp: currentTime, date: currentDate };
-      let paramJSON = JSON.stringify(param_event);
-      console.log(paramJSON);
-      await axios
-        .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate", paramJSON, {
-          headers: { "Content-Type": "application/json" },
-        })
-        .then((res) => {
-          if (res.status == 200) {
-            console.log("Logging room booking event");
-          } else if (res.status != 200) {
-          }
-        })
-        .catch((err) => {
-          console.log("Err", err);
-        });
+    let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
+    let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
+    let param_event = { event_type: "Room booking", user_email: currentUser.email, timestamp: currentTime, date: currentDate };
+    let paramJSON = JSON.stringify(param_event);
+    console.log(paramJSON);
+    await axios
+      .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate", paramJSON, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((res) => {
+        if (res.status == 200) {
+          console.log("Logging room booking event");
+        } else if (res.status != 200) {
+        }
+      })
+      .catch((err) => {
+        console.log("Err", err);
+      });
   };
 
   useEffect(() => {
