@@ -19,7 +19,6 @@ import VisualizationCharts from "./pages/VisualizationCharts";
 import Reports from "./pages/Reports";
 import Register from "./pages/Register";
 import { AuthContext, useAuth } from "./context";
-import { listenForNotifications } from "./api/notifications";
 import { RoomBookingToast} from "./components/ToastNotifications"
 
 function App() {
