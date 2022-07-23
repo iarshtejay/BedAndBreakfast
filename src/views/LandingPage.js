@@ -6,38 +6,61 @@ import { useLocation } from "react-router-dom";
 import Upcoming from "../components/Upcoming";
 import Bookings from "../components/Bookings";
 import CardContent from "@mui/material/CardContent";
-import { CardActionArea } from "@mui/material";
+import { Box, CardActionArea, CssBaseline, Divider } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Food from "../components/Food";
-import TourPackages from "../components/TourPackages";
+import Tour from "../components/Tour";
+import Room from "../components/Room";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import { useState } from "react";
 
 const Dashboard = () => {
   const location = useLocation();
-  return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Grid container spacing={3}>
-        {/* Upcoming Bookings */}
-        <Grid item xs={12}>
-          <Typography variant={"h4"} m={3}>
-            Meals
-          </Typography>
-          <Food />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant={"h4"} m={3}>
-            Travel Packages
-          </Typography>
+  const [open, setOpen] = useState(false);
+  const drawerWidth = 240;
+  const toggleDrawer = () => {
+    setOpen(!open);
+  };
 
-          <TourPackages />
-        </Grid>
-        {/* Recent Bookings */}
-        <Grid item xs={12}>
+  return (
+    <>
+      <AppBar>
+        <Toolbar>
+          <Typography variant="h6" component="div">
+            Bed And Breakfast
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Box>
+        <Container maxWidth="lg" sx={{ mt: 5, mb: 4, background: "#f2f6fc" }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              {<br /> * 5}
+            </Grid>
+            {/* Upcoming Bookings */}
+            <h1>Hotel Rooms</h1>
+            <Grid item xs={12}>
+              <Room />
+            </Grid>
+            <h1>Food Items</h1>
+            <Grid item xs={12}>
+              <Food />
+            </Grid>
+            <h1>Tour packages</h1>
+            <Grid item xs={12}>
+              <Tour />
+            </Grid>
+            {/* Recent Bookings */}
+            {/* <Grid item xs={12}>
           <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
             <Bookings />
           </Paper>
-        </Grid>
-      </Grid>
-    </Container>
+        </Grid> */}
+          </Grid>
+        </Container>
+      </Box>
+    </>
   );
 };
 export default Dashboard;

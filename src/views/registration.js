@@ -11,16 +11,17 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CognitoUserPool } from "amazon-cognito-identity-js";
-import { db } from "./firebase-config";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  CognitoUserAttribute,
+  CognitoUserPool,
+} from "amazon-cognito-identity-js";
+import firebase from "./firebase-config";
 import AWS from "aws-sdk";
-import { Alert } from "react-bootstrap";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AWS_CONFIG from "../config";
 import axios from "axios";
 window.Buffer = window.Buffer || require("buffer").Buffer;
-
+const db = firebase.db;
 AWS.config.update({
   region: AWS_CONFIG.region,
   credentials: new AWS.Credentials(
@@ -42,6 +43,46 @@ var error = {};
 
 export default function Registration() {
   let navigate = useNavigate();
+
+  const signUpCognito = async (formData) => {
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    UserPool.signUp(email, password, [], null, async (err, data) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      const userData = {
+        id: data.userSub,
+        email: formData.get("email"),
+        Password: formData.get("password"),
+        First_Name: formData.get("firstName"),
+        Last_Name: formData.get("lastName"),
+        Phone: formData.get("Phone"),
+      };
+      const email = formData.get("email");
+      const securityData = {
+        Question1: formData.get("SecurityAnswerOne"),
+        Question2: formData.get("SecurityAnswerTwo"),
+        Question3: formData.get("SecurityAnswerThree"),
+        ceaserCipherKey: parseInt(formData.get("ceasercipher")) % 26,
+      };
+      try {
+        const [_, __] = await Promise.all([
+          axios.post(
+            "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/user",
+            userData
+          ),
+          db.collection("userDetails").doc(email).set(securityData),
+        ]);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  };
+
   const validateFields = (values) => {
     const errors = {};
 
@@ -53,7 +94,7 @@ export default function Registration() {
     if (values.get("lastName") === "") {
       errors.lastname = "Last name Required!";
     } else if (!/^[A-Za-z]+$/.test(values.get("lastName"))) {
-      errors.lastname = "First name can only have characters!";
+      errors.lastname = "Last name can only have characters!";
     }
     if (values.get("email") === "") {
       errors.email = "Email Required! ";
@@ -90,10 +131,10 @@ export default function Registration() {
     return errors;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    //  Getting the form Data
     const UserData = new FormData(event.currentTarget);
+    console.log(UserData.values());
     error = validateFields(UserData);
 
     if (Object.keys(error).length !== 0) {
@@ -101,59 +142,7 @@ export default function Registration() {
 
       return null;
     }
-
-    //  User Registration in Cognito
-    UserPool.signUp(
-      UserData.get("email"),
-      UserData.get("password"),
-      [],
-      null,
-      (err, data) => {
-        if (err) {
-          Alert(
-            "Either Email is already valid or password is not in valid format!"
-          );
-          return null;
-        }
-      }
-    );
-
-    // Storing the infromation in firbase
-    const userCol = collection(db, "userDetails");
-    var ceaserKey = parseInt(UserData.get("ceasercipher")) % 26;
-    addDoc(userCol, {
-      email: UserData.get("email"),
-      Question1: UserData.get("SecurityAnswerOne"),
-      Question2: UserData.get("SecurityAnswerTwo"),
-      Question3: UserData.get("SecurityAnswerThree"),
-      ceasercipherKey: ceaserKey,
-    });
-    UserData.get("email");
-
-    // Storing in DynamoDB
-    var dynamo = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
-    var Dynamo_Params = {
-      TableName: "UserRegistration",
-      Item: {
-        email: { S: UserData.get("email") },
-        First_Name: { S: UserData.get("firstName") },
-        Last_Name: { S: UserData.get("lastName") },
-        Password: { S: UserData.get("password") },
-        Phone: { N: UserData.get("Phone") },
-      },
-    };
-
-    dynamo.putItem(Dynamo_Params, function (err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(data);
-      }
-    });
-    navigate("/login");
-  };
-
-  const clicked = () => {
+    signUpCognito(UserData);
     navigate("/login");
   };
 

@@ -87,10 +87,7 @@ function Login() {
                                 value={formValues.email}
                                 onChange={handleInputChange}
                                 error={emailError}
-                                helperText={
-                                  emailError &&
-                                  "Please enter email in a valid format"
-                                }
+                                helperText={emailError && "Please enter email in a valid format"}
                               />
                               <TextField
                                 className="w-100 mt-4"
@@ -100,9 +97,7 @@ function Login() {
                                 onChange={handleInputChange}
                                 type="password"
                                 error={passwordError}
-                                helperText={
-                                  passwordError && "Please enter password"
-                                }
+                                helperText={passwordError && "Please enter password"}
                               />
                               <button
                                 type="submit"
@@ -115,9 +110,7 @@ function Login() {
                             </form>
                             <div className="d-flex justify-content-center">
                               <a href="/forgotpassword">
-                                <small className="text-decoration-none align-content-center text-center fw-bold fc-light-black cursor-pointer l-spacing-2-0">
-                                  Forgot password?
-                                </small>
+                                <small className="text-decoration-none align-content-center text-center fw-bold fc-light-black cursor-pointer l-spacing-2-0">Forgot password?</small>
                               </a>
                             </div>
                           </div>
@@ -132,10 +125,7 @@ function Login() {
                         <div className="mt-3">
                           <h3>Create an account</h3>
                         </div>
-                        <small className="fc-light-black mt-2">
-                          By creating an account, you get access to early deals,
-                          offers, and various coupon codes to use on the website
-                        </small>
+                        <small className="fc-light-black mt-2">By creating an account, you get access to early deals, offers, and various coupon codes to use on the website</small>
                         <div className="">
                           <a href="/register">
                             <button
