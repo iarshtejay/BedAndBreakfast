@@ -153,6 +153,10 @@ export default function Registration() {
     navigate("/login");
   };
 
+  const clicked = () => {
+    navigate("/login");
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -299,14 +303,6 @@ export default function Registration() {
             <Typography type="body2">
               Already have an account? <a href="/login">Login</a>
             </Typography>
-            <Grid container>
-              <Grid item xs></Grid>
-              <Grid item>
-                {/* <Navigate to="/signin" replace={true} >
-                  {"Already Have An Account? Sign In"}
-                </Navigate> */}
-              </Grid>
-            </Grid>
           </Box>
         </Box>
       </Container>

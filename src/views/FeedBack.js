@@ -15,7 +15,7 @@ import {
   CognitoUser,
   AuthenticationDetails,
 } from "amazon-cognito-identity-js";
-import { db } from "./firebase-config";
+import { db } from "../firebase-serverless-config.js";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import AWS from "aws-sdk";
 // import Example from './modal';
@@ -30,8 +30,26 @@ export default function SignIn() {
   let navigate = useNavigate();
   const [review, setReview] = useState();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    axios
+      .post(
+        "https://us-central1-coherent-racer-356519.cloudfunctions.net/function-1",
+        {
+          user_id: "1",
+          feedback: review,
+        }
+      )
+      .then((res) => {
+        console.log(res.body);
+        if (res) {
+          alert("Review posted successfully!!");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
