@@ -20,6 +20,7 @@ import Reports from "./pages/Reports";
 import Register from "./pages/Register";
 import { AuthContext, useAuth } from "./context";
 import { RoomBookingToast } from "./components/ToastNotifications";
+import ReportsQuickSight from "./pages/ReportsQuickSight";
 
 function App() {
   const [isLogin, setLogin] = useState(false);
@@ -54,6 +55,7 @@ function App() {
               element={<VisualizationCharts />}
             ></Route>
             <Route path="/reports" element={<Reports />}></Route>
+            <Route path="/reportsquicksight" element={<ReportsQuickSight />}></Route>
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>
