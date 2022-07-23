@@ -45,9 +45,6 @@ const Room = () => {
 
   const bookRoom = async (event, param) => {
     if (currentUser) {
-      const bookRoomAPIEndPoint =
-        "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/rooms/bookroom";
-      //setloaded(true);
       param.user_id = currentUser.user_id;
       param.check_in = checkIn;
       param.check_out = checkOut;
