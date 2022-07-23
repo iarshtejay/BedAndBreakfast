@@ -6,7 +6,13 @@ import { useLocation } from "react-router-dom";
 import Upcoming from "../components/Upcoming";
 import Bookings from "../components/Bookings";
 import CardContent from "@mui/material/CardContent";
-import { Box, CardActionArea, CssBaseline, Divider } from "@mui/material";
+import {
+  Box,
+  CardActionArea,
+  CssBaseline,
+  Divider,
+  Button,
+} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Food from "../components/Food";
 import Tour from "../components/Tour";
@@ -14,6 +20,7 @@ import Room from "../components/Room";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -22,14 +29,31 @@ const Dashboard = () => {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  let navigate = useNavigate();
 
   return (
     <>
       <AppBar>
         <Toolbar>
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Bed And Breakfast
           </Typography>
+          <Button
+            color="inherit"
+            onClick={() => {
+              localStorage.clear();
+            }}
+          >
+            Logout
+          </Button>
+          <Button
+            color="inherit"
+            onClick={() => {
+              navigate("/reviews");
+            }}
+          >
+            Review
+          </Button>
         </Toolbar>
       </AppBar>
       <Box>
