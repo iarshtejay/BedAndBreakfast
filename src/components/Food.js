@@ -22,7 +22,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
 
-import { TourBookingToast } from "./ToastNotifications";
 import { BookingRequests } from "../api/BookingRequests";
 const Dashboard = () => {
   const location = useLocation();
@@ -70,18 +69,8 @@ const Dashboard = () => {
     //     console.log("Err", err);
     //   });
 
-    let currentDate =
-      timestamp.getDate() +
-      "/" +
-      (timestamp.getMonth() + 1) +
-      "/" +
-      timestamp.getFullYear();
-    let currentTime =
-      timestamp.getHours() +
-      ":" +
-      timestamp.getMinutes() +
-      ":" +
-      timestamp.getSeconds();
+    let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
+    let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
     let param_event = {
       event_type: "Food Order",
       user_email: currentUser.email,
@@ -90,16 +79,18 @@ const Dashboard = () => {
     };
     let paramJSON = JSON.stringify(param_event);
     console.log(paramJSON);
-    const bookTourAPIEndPoint =
-      "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/order";
-    //setloaded(true);
-    await BookingRequests.sendRequest("TOUR_SERVICE", param)
+
+    // Place order
+    await BookingRequests.sendRequest("MEAL_SERVICE", {
+      food: JSON.stringify(cart),
+      user_id: currentUser.user_id || 1,
+    })
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
         //setloaded(false);
         if (res.status == 200) {
           console.log("res.data", res.data);
-          TourBookingToast(param.tour_name);
+          MealBookingToast(cart);
         } else if (res.status != 200) {
           navigate("/");
         }
@@ -109,13 +100,9 @@ const Dashboard = () => {
       });
 
     await axios
-      .post(
-        "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate",
-        paramJSON,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      )
+      .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate", paramJSON, {
+        headers: { "Content-Type": "application/json" },
+      })
       .then((res) => {
         if (res.status == 200) {
           console.log("Logging Food order event toast");
@@ -144,11 +131,11 @@ const Dashboard = () => {
       console.log(order);
       let total = 0;
       order.map((item) => (total = total + item.totalPrice));
-      setTotalOrderPrice(total);
+      setTotalOrderPrice((total));
     } else {
       Swal.fire({
         // title: "Error!",
-        text: "Please Login or signup to book tour",
+        text: "Please Login or signup to order food",
         icon: "warning",
         confirmButtonText: "OK",
       }).then(function () {
@@ -159,9 +146,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     axios
-      .get(
-        "https://c3yio5z7d4.execute-api.us-east-1.amazonaws.com/dev/getmeals"
-      )
+      .get("https://c3yio5z7d4.execute-api.us-east-1.amazonaws.com/dev/getmeals")
       .then((res) => {
         console.log(res.data.Items);
         setMeals(res.data.Items);
@@ -187,10 +172,7 @@ const Dashboard = () => {
               </TableHead>
               <TableBody>
                 {meals.map((meal, i) => (
-                  <TableRow
-                    key={meal.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
+                  <TableRow key={meal.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                     <TableCell>{meal.name}</TableCell>
                     <TableCell>{meal.price}</TableCell>
                     <TableCell>
@@ -206,9 +188,7 @@ const Dashboard = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      <Button onClick={(e) => addToCart(e, meal, i)}>
-                        Add To Cart
-                      </Button>
+                      <Button onClick={(e) => addToCart(e, meal, i)}>Add To Cart</Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -234,28 +214,7 @@ const Dashboard = () => {
           </Button>
         </div>
       </Card>
-
-      {/* <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper
-            sx={{
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-              height: 240,
-            }}
-          >
-            <Upcoming />
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-            <Bookings />
-          </Paper>
-        </Grid>
-      </Grid> */}
       <ToastContainer />
-
       {console.log("quantity", qty)}
     </Container>
   );

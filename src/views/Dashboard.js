@@ -15,7 +15,7 @@ export const Dashboard = () => {
   const location = useLocation();
   let currentUser = localStorage.getItem("BB_USER");
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container sx={{ background: "#f2f6fc"}} style={{minWidth: "100%", minHeight: "100vh",}}>
       {/* <CardActionArea>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
@@ -41,10 +41,10 @@ export const Dashboard = () => {
         </Grid>
         {/* Recent Bookings */}
         <Grid item xs={12}>
-          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+          {/* <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
             <Bookings />
-          </Paper>
-          <Grid item xs={12}>
+          </Paper> */}
+          <Grid style={{marginTop:"10px"}} item xs={12}>
             <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
               <Visualization />
             </Paper>

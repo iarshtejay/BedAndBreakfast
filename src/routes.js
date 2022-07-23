@@ -6,8 +6,8 @@ import LandingPage from "./views/LandingPage";
 import Feedback from "./views/FeedBack";
 const routes = [
   {
-    path: "/dashboard",
-    name: "Dashboard",
+    path: "/admin",
+    name: "Admin Dashboard",
     element: <Dashboard />,
   },
   {
