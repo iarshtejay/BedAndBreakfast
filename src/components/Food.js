@@ -20,14 +20,18 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { useNavigate } from "react-router-dom";
 
+import { TourBookingToast } from "./ToastNotifications";
+import { BookingRequests } from "../api/BookingRequests";
 const Dashboard = () => {
   const location = useLocation();
   const [meals, setMeals] = useState([]);
   const [qty, setQty] = useState([]);
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState([]); // Final Cart
   const [totalOrderPrice, setTotalOrderPrice] = useState(0);
   let timestamp = new Date();
+  let navigate = useNavigate();
 
   let currentUser = JSON.parse(localStorage.getItem("BB_USER"));
   // console.log("Inside Food ordering for user: ", currentUser.email);
