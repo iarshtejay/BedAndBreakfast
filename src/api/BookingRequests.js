@@ -4,10 +4,14 @@ import axios from "axios";
 const BOOKING_REQUEST_QUEUE_ENDPOINT = process.env.REACT_APP_BOOKING_REQUEST_QUEUE_ENDPOINT
 
 const sendRequest = async (service, params) => {
-    console.log("BOOKING REQQQ", BOOKING_REQUEST_QUEUE_ENDPOINT)
+    
     const paramsString = {}
     for (let param in params) {
-        paramsString[param] = `${params[param]}`
+        if( (typeof param) !== "object" ){
+            paramsString[param] = `${params[param]}`
+        }else{
+            paramsString[param] = JSON.stringify(params[param])
+        } 
     }
 
     const body = {
