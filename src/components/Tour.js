@@ -12,6 +12,9 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { TourBookingToast } from "./ToastNotifications";
+import { ToastContainer } from "react-toastify";
+import { BookingRequests } from "../api/BookingRequests";
 
 const Tour = () => {
   const location = useLocation();
@@ -41,16 +44,13 @@ const Tour = () => {
     console.log(param_JSON);
     const bookTourAPIEndPoint = "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/tour";
     //setloaded(true);
-    await axios
-      .post(bookTourAPIEndPoint, param_JSON, {
-        headers: { "Content-Type": "application/json" },
-      })
+    await BookingRequests.sendRequest('TOUR_SERVICE', param)
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
-        Swal.fire("Your request for the tour booking is successful");
         //setloaded(false);
         if (res.status == 200) {
           console.log("res.data", res.data);
+          TourBookingToast(param.tour_name)
         } else if (res.status != 200) {
           navigate("/");
         }
@@ -144,6 +144,7 @@ const Tour = () => {
           </Paper>
         </Grid>
       </Grid> */}
+      <ToastContainer/>
     </Container>
   );
 };
