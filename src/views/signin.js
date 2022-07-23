@@ -155,7 +155,7 @@ export default function SignIn() {
       });
 
     if (email === "owner.bnb.csci5410.group18@gmail.com") {
-      navigate("/dashboard");
+      navigate("/admin");
     } else {
       let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
       let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();

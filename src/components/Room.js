@@ -45,8 +45,8 @@ const Room = () => {
 
   const bookRoom = async (event, param) => {
     if (currentUser) {
-      const bookRoomAPIEndPoint =
-        "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/rooms/bookroom";
+      // const bookRoomAPIEndPoint =
+      //   "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/rooms/bookroom";
       //setloaded(true);
       param.user_id = currentUser.user_id;
       param.check_in = checkIn;
@@ -73,18 +73,8 @@ const Room = () => {
           console.log("Err", err);
         });
 
-      let currentDate =
-        timestamp.getDate() +
-        "/" +
-        (timestamp.getMonth() + 1) +
-        "/" +
-        timestamp.getFullYear();
-      let currentTime =
-        timestamp.getHours() +
-        ":" +
-        timestamp.getMinutes() +
-        ":" +
-        timestamp.getSeconds();
+      let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
+      let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
       let param_event = {
         event_type: "Room booking",
         user_email: currentUser.email,
@@ -94,13 +84,9 @@ const Room = () => {
       let paramJSON = JSON.stringify(param_event);
       console.log(paramJSON);
       await axios
-        .post(
-          "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate",
-          paramJSON,
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        )
+        .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate", paramJSON, {
+          headers: { "Content-Type": "application/json" },
+        })
         .then((res) => {
           if (res.status == 200) {
             console.log("Logging room booking event");
@@ -124,9 +110,7 @@ const Room = () => {
 
   useEffect(() => {
     axios
-      .get(
-        "https://h7ppg1ry82.execute-api.us-east-1.amazonaws.com/dev/getrooms"
-      )
+      .get("https://h7ppg1ry82.execute-api.us-east-1.amazonaws.com/dev/getrooms")
       .then((res) => {
         console.log("Rooms- ", res.data.rooms);
         setRooms(res.data.rooms);
@@ -140,13 +124,13 @@ const Room = () => {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Card>
         <CardContent>
-          <div className="d-flex justify-content-between">
-            <div style={{ fontWeight: "bold" }}>Room number</div>
-            <div style={{ fontWeight: "bold" }}>Price</div>
-            <div style={{ fontWeight: "bold" }}>Type</div>
-            <div style={{ fontWeight: "bold" }}>Check In</div>
-            <div style={{ fontWeight: "bold" }}>Check Out</div>
-            <div style={{ fontWeight: "bold" }}>Action</div>
+          <div className="d-flex">
+            <div style={{ width: "200px", fontWeight: "bold" }}>Room number</div>
+            <div style={{ width: "200px", fontWeight: "bold" }}>Price</div>
+            <div style={{ width: "200px", fontWeight: "bold" }}>Type</div>
+            <div style={{ width: "250px", fontWeight: "bold" }}>Check In</div>
+            <div style={{ width: "200px", fontWeight: "bold" }}>Check Out</div>
+            <div style={{ width: "100px", fontWeight: "bold" }}>Action</div>
           </div>
         </CardContent>
       </Card>
@@ -154,29 +138,17 @@ const Room = () => {
         <Card>
           <CardContent>
             <div className="d-flex justify-content-between">
-              <div>{room.number}</div>
-              <div>{room.price}</div>
-              <div>{room.type}</div>
-              <div>
+              <div style={{ width: "220px" }}>{room.number}</div>
+              <div style={{ width: "250px" }}>{room.price}</div>
+              <div style={{ width: "200px" }}>{room.type}</div>
+              <div style={{ marginRight: "10px" }}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DesktopDatePicker
-                    label="Check In"
-                    inputFormat="MM/dd/yyyy"
-                    value={checkIn}
-                    onChange={handleCheckIn}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
+                  <DesktopDatePicker label="Check In" inputFormat="MM/dd/yyyy" value={checkIn} onChange={handleCheckIn} renderInput={(params) => <TextField {...params} />} />
                 </LocalizationProvider>
               </div>
-              <div>
+              <div style={{ marginRight: "10px" }}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DesktopDatePicker
-                    label="Check Out"
-                    inputFormat="MM/dd/yyyy"
-                    value={checkOut}
-                    onChange={handleCheckOut}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
+                  <DesktopDatePicker label="Check Out" inputFormat="MM/dd/yyyy" value={checkOut} onChange={handleCheckOut} renderInput={(params) => <TextField {...params} />} />
                 </LocalizationProvider>
               </div>
               <Button
@@ -186,6 +158,7 @@ const Room = () => {
                     room_type: room.type,
                   })
                 }
+                variant="contained"
               >
                 Book Now
               </Button>
@@ -193,26 +166,6 @@ const Room = () => {
           </CardContent>
         </Card>
       ))}
-
-      {/* <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper
-            sx={{
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-              height: 240,
-            }}
-          >
-            <Upcoming />
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-            <Bookings />
-          </Paper>
-        </Grid>
-      </Grid> */}
       <ToastContainer />
     </Container>
   );

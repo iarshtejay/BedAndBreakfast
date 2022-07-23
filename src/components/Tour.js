@@ -43,8 +43,7 @@ const Tour = () => {
       //param = JSON.stringify({ tour_id: 1, tour_name: "alberta", head_count: 5, user_id: 42 });
       const param_JSON = JSON.stringify(param);
       console.log(param_JSON);
-      const bookTourAPIEndPoint =
-        "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/tour";
+      //const bookTourAPIEndPoint = "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/tour";
       //setloaded(true);
       await BookingRequests.sendRequest("TOUR_SERVICE", param)
         .then((res) => {
@@ -61,18 +60,8 @@ const Tour = () => {
           console.log("Err", err);
         });
 
-      let currentDate =
-        timestamp.getDate() +
-        "/" +
-        (timestamp.getMonth() + 1) +
-        "/" +
-        timestamp.getFullYear();
-      let currentTime =
-        timestamp.getHours() +
-        ":" +
-        timestamp.getMinutes() +
-        ":" +
-        timestamp.getSeconds();
+      let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
+      let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
       let param_event = {
         event_type: "Tour booking",
         user_email: currentUser.email,
@@ -82,13 +71,9 @@ const Tour = () => {
       let paramJSON = JSON.stringify(param_event);
       console.log(paramJSON);
       await axios
-        .post(
-          "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate",
-          paramJSON,
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        )
+        .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate", paramJSON, {
+          headers: { "Content-Type": "application/json" },
+        })
         .then((res) => {
           if (res.status == 200) {
             console.log("Logging tour booking event");
@@ -112,9 +97,7 @@ const Tour = () => {
 
   useEffect(() => {
     axios
-      .get(
-        "https://4enm1lvle2.execute-api.us-east-1.amazonaws.com/dev/alltours"
-      )
+      .get("https://4enm1lvle2.execute-api.us-east-1.amazonaws.com/dev/alltours")
       .then((res) => {
         console.log(res.data.Items);
         setTours(res.data.Items);
@@ -150,9 +133,8 @@ const Tour = () => {
                     tour_name: tour.tour_name,
                   })
                 }
-              >
-                Book Now
-              </Button>
+                variant="contained"
+              >Book Now</Button>
             </div>
           </CardContent>
         </Card>

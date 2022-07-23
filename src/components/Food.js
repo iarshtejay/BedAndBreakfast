@@ -22,7 +22,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
 
-import { TourBookingToast } from "./ToastNotifications";
 import { BookingRequests } from "../api/BookingRequests";
 const Dashboard = () => {
   const location = useLocation();
@@ -90,16 +89,16 @@ const Dashboard = () => {
     };
     let paramJSON = JSON.stringify(param_event);
     console.log(paramJSON);
-    const bookTourAPIEndPoint =
-      "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/order";
+    // const bookTourAPIEndPoint =
+    //   "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/order";
     //setloaded(true);
-    await BookingRequests.sendRequest("TOUR_SERVICE", param)
+    await BookingRequests.sendRequest("FOOD_SERVICE", param)
       .then((res) => {
         console.log("Res: " + JSON.stringify(res));
         //setloaded(false);
         if (res.status == 200) {
           console.log("res.data", res.data);
-          TourBookingToast(param.tour_name);
+          MealBookingToast(param.tour_name);
         } else if (res.status != 200) {
           navigate("/");
         }
@@ -148,7 +147,7 @@ const Dashboard = () => {
     } else {
       Swal.fire({
         // title: "Error!",
-        text: "Please Login or signup to book tour",
+        text: "Please Login or signup to order food",
         icon: "warning",
         confirmButtonText: "OK",
       }).then(function () {
@@ -234,28 +233,7 @@ const Dashboard = () => {
           </Button>
         </div>
       </Card>
-
-      {/* <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper
-            sx={{
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-              height: 240,
-            }}
-          >
-            <Upcoming />
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-            <Bookings />
-          </Paper>
-        </Grid>
-      </Grid> */}
       <ToastContainer />
-
       {console.log("quantity", qty)}
     </Container>
   );
