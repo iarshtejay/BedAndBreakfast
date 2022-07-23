@@ -12,7 +12,7 @@ function preventDefault(event) {
 export default function Reports() {
   let navigate = useNavigate();
   const directHome = async (event) => {
-    navigate("/dashboard");
+    navigate("/admin");
   };
   return (
     <React.Fragment>

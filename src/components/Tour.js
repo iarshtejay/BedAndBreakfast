@@ -61,24 +61,8 @@ const Tour = () => {
           console.log("Err", err);
         });
 
-<<<<<<< HEAD
       let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
       let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
-=======
-        
-      let currentDate =
-        timestamp.getDate() +
-        "/" +
-        (timestamp.getMonth() + 1) +
-        "/" +
-        timestamp.getFullYear();
-      let currentTime =
-        timestamp.getHours() +
-        ":" +
-        timestamp.getMinutes() +
-        ":" +
-        timestamp.getSeconds();
->>>>>>> 846d1a8782671c7b2c7bdde087678ea966a766ef
       let param_event = {
         event_type: "Tour booking",
         user_email: currentUser.email,

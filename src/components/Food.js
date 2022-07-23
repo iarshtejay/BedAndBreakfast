@@ -69,18 +69,8 @@ const Dashboard = () => {
     //     console.log("Err", err);
     //   });
 
-    let currentDate =
-      timestamp.getDate() +
-      "/" +
-      (timestamp.getMonth() + 1) +
-      "/" +
-      timestamp.getFullYear();
-    let currentTime =
-      timestamp.getHours() +
-      ":" +
-      timestamp.getMinutes() +
-      ":" +
-      timestamp.getSeconds();
+    let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
+    let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
     let param_event = {
       event_type: "Food Order",
       user_email: currentUser.email,
@@ -91,31 +81,28 @@ const Dashboard = () => {
     console.log(paramJSON);
 
     // Place order
-    await BookingRequests.sendRequest('MEAL_SERVICE', {
+    await BookingRequests.sendRequest("MEAL_SERVICE", {
       food: JSON.stringify(cart),
-      user_id: currentUser.user_id || 1
-    }).then((res) => {
-      console.log("Res: " + JSON.stringify(res));
-      //setloaded(false);
-      if (res.status == 200) {
-        console.log("res.data", res.data);
-        MealBookingToast(cart);
-      } else if (res.status != 200) {
-        navigate("/");
-      }
+      user_id: currentUser.user_id || 1,
     })
-    .catch((err) => {
-      console.log("Err", err);
-    });
+      .then((res) => {
+        console.log("Res: " + JSON.stringify(res));
+        //setloaded(false);
+        if (res.status == 200) {
+          console.log("res.data", res.data);
+          MealBookingToast(cart);
+        } else if (res.status != 200) {
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        console.log("Err", err);
+      });
 
     await axios
-      .post(
-        "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate",
-        paramJSON,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      )
+      .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate", paramJSON, {
+        headers: { "Content-Type": "application/json" },
+      })
       .then((res) => {
         if (res.status == 200) {
           console.log("Logging Food order event toast");
@@ -144,8 +131,7 @@ const Dashboard = () => {
       console.log(order);
       let total = 0;
       order.map((item) => (total = total + item.totalPrice));
-      setTotalOrderPrice(total);
-
+      setTotalOrderPrice((total));
     } else {
       Swal.fire({
         // title: "Error!",
@@ -160,9 +146,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     axios
-      .get(
-        "https://c3yio5z7d4.execute-api.us-east-1.amazonaws.com/dev/getmeals"
-      )
+      .get("https://c3yio5z7d4.execute-api.us-east-1.amazonaws.com/dev/getmeals")
       .then((res) => {
         console.log(res.data.Items);
         setMeals(res.data.Items);
@@ -188,10 +172,7 @@ const Dashboard = () => {
               </TableHead>
               <TableBody>
                 {meals.map((meal, i) => (
-                  <TableRow
-                    key={meal.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
+                  <TableRow key={meal.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                     <TableCell>{meal.name}</TableCell>
                     <TableCell>{meal.price}</TableCell>
                     <TableCell>
@@ -207,9 +188,7 @@ const Dashboard = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      <Button onClick={(e) => addToCart(e, meal, i)}>
-                        Add To Cart
-                      </Button>
+                      <Button onClick={(e) => addToCart(e, meal, i)}>Add To Cart</Button>
                     </TableCell>
                   </TableRow>
                 ))}
