@@ -89,23 +89,24 @@ const Dashboard = () => {
     };
     let paramJSON = JSON.stringify(param_event);
     console.log(paramJSON);
-    // const bookTourAPIEndPoint =
-    //   "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/order";
-    //setloaded(true);
-    await BookingRequests.sendRequest("FOOD_SERVICE", param)
-      .then((res) => {
-        console.log("Res: " + JSON.stringify(res));
-        //setloaded(false);
-        if (res.status == 200) {
-          console.log("res.data", res.data);
-          MealBookingToast(param.tour_name);
-        } else if (res.status != 200) {
-          navigate("/");
-        }
-      })
-      .catch((err) => {
-        console.log("Err", err);
-      });
+
+    // Place order
+    await BookingRequests.sendRequest('MEAL_SERVICE', {
+      food: JSON.stringify(cart),
+      user_id: currentUser.user_id || 1
+    }).then((res) => {
+      console.log("Res: " + JSON.stringify(res));
+      //setloaded(false);
+      if (res.status == 200) {
+        console.log("res.data", res.data);
+        MealBookingToast(cart);
+      } else if (res.status != 200) {
+        navigate("/");
+      }
+    })
+    .catch((err) => {
+      console.log("Err", err);
+    });
 
     await axios
       .post(
@@ -144,6 +145,7 @@ const Dashboard = () => {
       let total = 0;
       order.map((item) => (total = total + item.totalPrice));
       setTotalOrderPrice(total);
+
     } else {
       Swal.fire({
         // title: "Error!",

@@ -38,13 +38,14 @@ const Tour = () => {
       });
 
       param.head_count = headcount;
-      param.user_id = 123;
+      param.user_id = currentUser.user_id || 1;
       console.log(param);
       //param = JSON.stringify({ tour_id: 1, tour_name: "alberta", head_count: 5, user_id: 42 });
       const param_JSON = JSON.stringify(param);
       console.log(param_JSON);
       //const bookTourAPIEndPoint = "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/tour";
       //setloaded(true);
+
       await BookingRequests.sendRequest("TOUR_SERVICE", param)
         .then((res) => {
           console.log("Res: " + JSON.stringify(res));
@@ -60,8 +61,24 @@ const Tour = () => {
           console.log("Err", err);
         });
 
+<<<<<<< HEAD
       let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
       let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
+=======
+        
+      let currentDate =
+        timestamp.getDate() +
+        "/" +
+        (timestamp.getMonth() + 1) +
+        "/" +
+        timestamp.getFullYear();
+      let currentTime =
+        timestamp.getHours() +
+        ":" +
+        timestamp.getMinutes() +
+        ":" +
+        timestamp.getSeconds();
+>>>>>>> 846d1a8782671c7b2c7bdde087678ea966a766ef
       let param_event = {
         event_type: "Tour booking",
         user_email: currentUser.email,
