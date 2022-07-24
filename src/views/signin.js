@@ -150,9 +150,16 @@ export default function SignIn() {
             })
             .catch((err) => {
               console.log("Err", err);
+              return;
             });
 
           if (email === "owner.bnb.csci5410.group18@gmail.com") {
+            console.log("Logging login event");
+            popSnackBar("Successfully logged in!", true);
+            localStorage.setItem(
+              "COGNITO_JWT_TOKEN",
+              stepOneData.idToken.jwtToken
+            );
             navigate("/admin");
           } else {
             let currentDate =
@@ -186,6 +193,12 @@ export default function SignIn() {
               .then((res) => {
                 if (res.status == 200) {
                   console.log("Logging login event");
+                  popSnackBar("Successfully logged in!", true);
+                  localStorage.setItem(
+                    "COGNITO_JWT_TOKEN",
+                    stepOneData.idToken.jwtToken
+                  );
+                  navigate("/home");
                 } else if (res.status != 200) {
                 }
               })
@@ -201,9 +214,6 @@ export default function SignIn() {
         setStepCount(3);
         return;
       });
-    popSnackBar("Successfully logged in!", true);
-    localStorage.setItem("COGNITO_JWT_TOKEN", stepOneData.idToken.jwtToken);
-    navigate("/home");
   };
   const clicked = () => {
     navigate("/login");
