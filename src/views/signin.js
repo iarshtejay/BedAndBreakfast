@@ -6,7 +6,11 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CognitoUserPool, CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
+import {
+  CognitoUserPool,
+  CognitoUser,
+  AuthenticationDetails,
+} from "amazon-cognito-identity-js";
 
 import questions from "../utils/Questions";
 import { Alert, Snackbar } from "@mui/material";
@@ -118,17 +122,77 @@ export default function SignIn() {
     const StepThreeData = new FormData(event.currentTarget);
 
     axios
-      .get(`https://us-central1-csci5410-assignmnet4.cloudfunctions.net/group-18?text=${caesarCipherText}&key=${stepTwoData.ceaserCipherKey}`, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-        },
-      })
+      .get(
+        `https://us-central1-csci5410-assignmnet4.cloudfunctions.net/group-18?text=${caesarCipherText}&key=${stepTwoData.ceaserCipherKey}`
+      )
       .then((res) => {
-        if (res.data.output != StepThreeData.get("caesarCipherKey")) {
+        if (res.data.output != StepThreeData.get("caeserCipherKey")) {
           popSnackBar("Authentication failed", false);
           setStepCount(1);
           return;
+        } else {
+          axios
+            .post(
+              "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/user/loggedin",
+              JSON.stringify({ email: email }),
+              {
+                headers: { "Content-Type": "application/json" },
+              }
+            )
+            .then((res) => {
+              if (res.status == 200) {
+                localStorage.setItem(
+                  "BB_USER",
+                  JSON.stringify({ email: email, user_id: res.data.id })
+                );
+              } else if (res.status != 200) {
+              }
+            })
+            .catch((err) => {
+              console.log("Err", err);
+            });
+
+          if (email === "owner.bnb.csci5410.group18@gmail.com") {
+            navigate("/admin");
+          } else {
+            let currentDate =
+              timestamp.getDate() +
+              "/" +
+              (timestamp.getMonth() + 1) +
+              "/" +
+              timestamp.getFullYear();
+            let currentTime =
+              timestamp.getHours() +
+              ":" +
+              timestamp.getMinutes() +
+              ":" +
+              timestamp.getSeconds();
+            let param = {
+              event_type: "Login",
+              user_email: email,
+              timestamp: currentTime,
+              date: currentDate,
+            };
+            let paramJSON = JSON.stringify(param);
+            console.log(paramJSON);
+            axios
+              .post(
+                "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate",
+                paramJSON,
+                {
+                  headers: { "Content-Type": "application/json" },
+                }
+              )
+              .then((res) => {
+                if (res.status == 200) {
+                  console.log("Logging login event");
+                } else if (res.status != 200) {
+                }
+              })
+              .catch((err) => {
+                console.log("Err", err);
+              });
+          }
         }
       })
       .catch((err) => {
@@ -139,44 +203,7 @@ export default function SignIn() {
       });
     popSnackBar("Successfully logged in!", true);
     localStorage.setItem("COGNITO_JWT_TOKEN", stepOneData.idToken.jwtToken);
-
-    await axios
-      .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/user/loggedin", JSON.stringify({ email: email }), {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((res) => {
-        if (res.status == 200) {
-          localStorage.setItem("BB_USER", JSON.stringify({ email: email, user_id: res.data.id }));
-        } else if (res.status != 200) {
-        }
-      })
-      .catch((err) => {
-        console.log("Err", err);
-      });
-
-    if (email === "owner.bnb.csci5410.group18@gmail.com") {
-      navigate("/admin");
-    } else {
-      let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
-      let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
-      let param = { event_type: "Login", user_email: email, timestamp: currentTime, date: currentDate };
-      let paramJSON = JSON.stringify(param);
-      console.log(paramJSON);
-      await axios
-        .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate", paramJSON, {
-          headers: { "Content-Type": "application/json" },
-        })
-        .then((res) => {
-          if (res.status == 200) {
-            console.log("Logging login event");
-          } else if (res.status != 200) {
-          }
-        })
-        .catch((err) => {
-          console.log("Err", err);
-        });
-      navigate("/");
-    }
+    navigate("/home");
   };
   const clicked = () => {
     navigate("/login");
@@ -199,12 +226,39 @@ export default function SignIn() {
               <Typography component="h1" variant="h5">
                 Sign in - Step 1
               </Typography>
-              <Box component="form" onSubmit={handleStepOne} noValidate sx={{ mt: 1 }}>
-                <TextField margin="normal" required fullWidth id="email" label="Email Address" name="email" autoFocus />
+              <Box
+                component="form"
+                onSubmit={handleStepOne}
+                noValidate
+                sx={{ mt: 1 }}
+              >
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoFocus
+                />
                 {error.email && <p>{error.email}</p>}
-                <TextField margin="normal" required fullWidth name="password" label="Password" type="password" id="password" autoComplete="current-password" />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                />
                 {error.password && <p>{error.password}</p>}
-                <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
                   Sign in
                 </Button>
                 <Typography type="body2">
@@ -218,9 +272,27 @@ export default function SignIn() {
               <Typography component="h1" variant="h5">
                 Security Question - Step 2
               </Typography>
-              <Box component="form" onSubmit={handleStepTwo} noValidate sx={{ mt: 1 }}>
-                <TextField margin="normal" required fullWidth id="secQuestion" label={questions[RandomNum]} name="secQuestion" autoFocus />
-                <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+              <Box
+                component="form"
+                onSubmit={handleStepTwo}
+                noValidate
+                sx={{ mt: 1 }}
+              >
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="secQuestion"
+                  label={questions[RandomNum]}
+                  name="secQuestion"
+                  autoFocus
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
                   Submit
                 </Button>
                 <Typography type="body2">
@@ -234,7 +306,12 @@ export default function SignIn() {
               <Typography component="h1" variant="h5">
                 Caesar Cipher - Step 3
               </Typography>
-              <Box component="form" onSubmit={handleStepThree} noValidate sx={{ mt: 1 }}>
+              <Box
+                component="form"
+                onSubmit={handleStepThree}
+                noValidate
+                sx={{ mt: 1 }}
+              >
                 <TextField
                   margin="normal"
                   required
@@ -244,7 +321,12 @@ export default function SignIn() {
                   name="caeserCipherKey"
                   autoFocus
                 />
-                <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
                   Submit
                 </Button>
                 <Typography type="body2">
@@ -254,7 +336,11 @@ export default function SignIn() {
             </>
           )}
         </Box>
-        <Snackbar open={snackBarOpen} autoHideDuration={5000} onClose={handleSnackbarClose}>
+        <Snackbar
+          open={snackBarOpen}
+          autoHideDuration={5000}
+          onClose={handleSnackbarClose}
+        >
           <Alert onClose={handleSnackbarClose} severity={snackBarSeverity}>
             {snackBarMessage}
           </Alert>

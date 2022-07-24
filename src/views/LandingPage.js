@@ -82,7 +82,7 @@ const Dashboard = () => {
               <Tour />
             </Grid>
             <h1 style={{ marginLeft: "10px" }}>
-              Explore more at Bread & Breakfast
+              Explore more at Bed & Breakfast
             </h1>
             <Grid item xs={12}>
               <Visualization />
