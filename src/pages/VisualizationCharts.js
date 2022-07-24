@@ -22,7 +22,7 @@ export default function VisualizationCharts() {
         navigate("/admin")
       }
       else{
-        navigate("/")
+        navigate("/home")
       }
     }
     else{
