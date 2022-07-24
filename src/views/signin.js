@@ -123,19 +123,76 @@ export default function SignIn() {
 
     axios
       .get(
-        `https://us-central1-csci5410-assignmnet4.cloudfunctions.net/group-18?text=${caesarCipherText}&key=${stepTwoData.ceaserCipherKey}`,
-        {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-          },
-        }
+        `https://us-central1-csci5410-assignmnet4.cloudfunctions.net/group-18?text=${caesarCipherText}&key=${stepTwoData.ceaserCipherKey}`
       )
       .then((res) => {
-        if (res.data.output != StepThreeData.get("caesarCipherKey")) {
+        if (res.data.output != StepThreeData.get("caeserCipherKey")) {
           popSnackBar("Authentication failed", false);
           setStepCount(1);
           return;
+        } else {
+          axios
+            .post(
+              "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/user/loggedin",
+              JSON.stringify({ email: email }),
+              {
+                headers: { "Content-Type": "application/json" },
+              }
+            )
+            .then((res) => {
+              if (res.status == 200) {
+                localStorage.setItem(
+                  "BB_USER",
+                  JSON.stringify({ email: email, user_id: res.data.id })
+                );
+              } else if (res.status != 200) {
+              }
+            })
+            .catch((err) => {
+              console.log("Err", err);
+            });
+
+          if (email === "owner.bnb.csci5410.group18@gmail.com") {
+            navigate("/admin");
+          } else {
+            let currentDate =
+              timestamp.getDate() +
+              "/" +
+              (timestamp.getMonth() + 1) +
+              "/" +
+              timestamp.getFullYear();
+            let currentTime =
+              timestamp.getHours() +
+              ":" +
+              timestamp.getMinutes() +
+              ":" +
+              timestamp.getSeconds();
+            let param = {
+              event_type: "Login",
+              user_email: email,
+              timestamp: currentTime,
+              date: currentDate,
+            };
+            let paramJSON = JSON.stringify(param);
+            console.log(paramJSON);
+            axios
+              .post(
+                "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate",
+                paramJSON,
+                {
+                  headers: { "Content-Type": "application/json" },
+                }
+              )
+              .then((res) => {
+                if (res.status == 200) {
+                  console.log("Logging login event");
+                } else if (res.status != 200) {
+                }
+              })
+              .catch((err) => {
+                console.log("Err", err);
+              });
+          }
         }
       })
       .catch((err) => {
@@ -146,70 +203,7 @@ export default function SignIn() {
       });
     popSnackBar("Successfully logged in!", true);
     localStorage.setItem("COGNITO_JWT_TOKEN", stepOneData.idToken.jwtToken);
-
-    await axios
-      .post(
-        "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/user/loggedin",
-        JSON.stringify({ email: email }),
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      )
-      .then((res) => {
-        if (res.status == 200) {
-          localStorage.setItem(
-            "BB_USER",
-            JSON.stringify({ email: email, user_id: res.data.id })
-          );
-        } else if (res.status != 200) {
-        }
-      })
-      .catch((err) => {
-        console.log("Err", err);
-      });
-
-    if (email === "owner.bnb.csci5410.group18@gmail.com") {
-      navigate("/admin");
-    } else {
-      let currentDate =
-        timestamp.getDate() +
-        "/" +
-        (timestamp.getMonth() + 1) +
-        "/" +
-        timestamp.getFullYear();
-      let currentTime =
-        timestamp.getHours() +
-        ":" +
-        timestamp.getMinutes() +
-        ":" +
-        timestamp.getSeconds();
-      let param = {
-        event_type: "Login",
-        user_email: email,
-        timestamp: currentTime,
-        date: currentDate,
-      };
-      let paramJSON = JSON.stringify(param);
-      console.log(paramJSON);
-      await axios
-        .post(
-          "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate",
-          paramJSON,
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        )
-        .then((res) => {
-          if (res.status == 200) {
-            console.log("Logging login event");
-          } else if (res.status != 200) {
-          }
-        })
-        .catch((err) => {
-          console.log("Err", err);
-        });
-      navigate("/home");
-    }
+    navigate("/home");
   };
   const clicked = () => {
     navigate("/login");
