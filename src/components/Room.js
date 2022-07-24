@@ -54,7 +54,9 @@ const Room = () => {
 
       const param_JSON = JSON.stringify(param);
       console.log(param_JSON);
-
+      let diffTime = Math.abs(checkOut - checkIn);
+      let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      console.log("diffDays-=-=-=-=-=-=", diffDays);
       await BookingRequests.sendRequest("ROOM_SERVICE", param)
         .then((res) => {
           console.log("Res: " + JSON.stringify(res));
@@ -64,6 +66,27 @@ const Room = () => {
               check_in: String(checkIn).substring(4, 15),
               check_out: String(checkOut).substring(4, 15),
             });
+            axios
+              .post(
+                "https://us-central1-coherent-racer-356519.cloudfunctions.net/predictTour",
+                { stay_duration: diffDays },
+                {
+                  headers: { "Content-Type": "application/json" },
+                }
+              )
+              .then((res) => {
+                let tourPackages = ["Niagara", "NS", "Alberta"];
+                let prediction = parseInt(res.data.prediction);
+                let tourPackage = tourPackages[prediction - 1];
+                // TourPredictingToast(tourPackage);
+                Swal.fire({
+                  text: `Based on your booking, we suggest you to try out our ${tourPackage} tour`,
+                  icon: "info",
+                  confirmButtonText: "OK",
+                }).then(function () {
+                  // window.location = "/login";
+                });
+              });
             //Swal.fire("Your request for room booking is successful from dates " + String(checkIn).substring(4, 15) + " to " + String(checkOut).substring(4, 15));
           } else if (res.status != 200) {
             navigate("/");
@@ -73,8 +96,18 @@ const Room = () => {
           console.log("Err", err);
         });
 
-      let currentDate = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
-      let currentTime = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds();
+      let currentDate =
+        timestamp.getDate() +
+        "/" +
+        (timestamp.getMonth() + 1) +
+        "/" +
+        timestamp.getFullYear();
+      let currentTime =
+        timestamp.getHours() +
+        ":" +
+        timestamp.getMinutes() +
+        ":" +
+        timestamp.getSeconds();
       let param_event = {
         event_type: "Room booking",
         user_email: currentUser.email,
@@ -84,9 +117,13 @@ const Room = () => {
       let paramJSON = JSON.stringify(param_event);
       console.log(paramJSON);
       await axios
-        .post("https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate", paramJSON, {
-          headers: { "Content-Type": "application/json" },
-        })
+        .post(
+          "https://ds3ikau3tl.execute-api.us-east-1.amazonaws.com/dev/generate",
+          paramJSON,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        )
         .then((res) => {
           if (res.status == 200) {
             console.log("Logging room booking event");
@@ -110,7 +147,9 @@ const Room = () => {
 
   useEffect(() => {
     axios
-      .get("https://h7ppg1ry82.execute-api.us-east-1.amazonaws.com/dev/getrooms")
+      .get(
+        "https://h7ppg1ry82.execute-api.us-east-1.amazonaws.com/dev/getrooms"
+      )
       .then((res) => {
         console.log("Rooms- ", res.data.rooms);
         setRooms(res.data.rooms);
@@ -125,7 +164,9 @@ const Room = () => {
       <Card>
         <CardContent>
           <div className="d-flex">
-            <div style={{ width: "200px", fontWeight: "bold" }}>Room number</div>
+            <div style={{ width: "200px", fontWeight: "bold" }}>
+              Room number
+            </div>
             <div style={{ width: "200px", fontWeight: "bold" }}>Price</div>
             <div style={{ width: "200px", fontWeight: "bold" }}>Type</div>
             <div style={{ width: "250px", fontWeight: "bold" }}>Check In</div>
@@ -143,12 +184,24 @@ const Room = () => {
               <div style={{ width: "200px" }}>{room.type}</div>
               <div style={{ marginRight: "10px" }}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DesktopDatePicker label="Check In" inputFormat="MM/dd/yyyy" value={checkIn} onChange={handleCheckIn} renderInput={(params) => <TextField {...params} />} />
+                  <DesktopDatePicker
+                    label="Check In"
+                    inputFormat="MM/dd/yyyy"
+                    value={checkIn}
+                    onChange={handleCheckIn}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
                 </LocalizationProvider>
               </div>
               <div style={{ marginRight: "10px" }}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DesktopDatePicker label="Check Out" inputFormat="MM/dd/yyyy" value={checkOut} onChange={handleCheckOut} renderInput={(params) => <TextField {...params} />} />
+                  <DesktopDatePicker
+                    label="Check Out"
+                    inputFormat="MM/dd/yyyy"
+                    value={checkOut}
+                    onChange={handleCheckOut}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
                 </LocalizationProvider>
               </div>
               <Button

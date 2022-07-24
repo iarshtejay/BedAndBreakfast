@@ -21,6 +21,8 @@ import AWS from "aws-sdk";
 // import Example from './modal';
 import { Alert } from "@mui/material";
 import { useNavigate, Navigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
 const axios = require("axios");
 
 const theme = createTheme();
@@ -29,27 +31,44 @@ var error = {};
 export default function SignIn() {
   let navigate = useNavigate();
   const [review, setReview] = useState();
+  let currentUser = JSON.parse(localStorage.getItem("BB_USER"));
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    if (currentUser) {
+      event.preventDefault();
 
-    axios
-      .post(
-        "https://us-central1-coherent-racer-356519.cloudfunctions.net/function-1",
-        {
-          user_id: "1",
-          feedback: review,
-        }
-      )
-      .then((res) => {
-        console.log(res.body);
-        if (res) {
-          alert("Review posted successfully!!");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
+      axios
+        .post(
+          "https://us-central1-coherent-racer-356519.cloudfunctions.net/function-1",
+          {
+            user_email: currentUser.email,
+            feedback: review,
+          }
+        )
+        .then((res) => {
+          console.log(res.body);
+          if (res) {
+            Swal.fire({
+              // title: "Error!",
+              text: "Review posted successfully!!",
+              icon: "info",
+              confirmButtonText: "OK",
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      Swal.fire({
+        // title: "Error!",
+        text: "Please Login or signup to book tour",
+        icon: "warning",
+        confirmButtonText: "OK",
+      }).then(function () {
+        window.location = "/login";
       });
+    }
   };
 
   return (
@@ -98,6 +117,9 @@ export default function SignIn() {
             >
               Submit
             </Button>
+            <Typography type="body2">
+              Go back to <a href="/">dashboard</a>
+            </Typography>
           </Box>
         </Box>
       </Container>
