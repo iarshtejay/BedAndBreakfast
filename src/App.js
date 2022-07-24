@@ -21,24 +21,29 @@ import Register from "./pages/Register";
 import { AuthContext, useAuth } from "./context";
 import { RoomBookingToast } from "./components/ToastNotifications";
 import ReportsQuickSight from "./pages/ReportsQuickSight";
-import KommunicateChat from './chat'
+import KommunicateChat from "./chat";
 
 function App() {
   const [isLogin, setLogin] = useState(false);
   const mdTheme = createTheme({});
 
   return (
-    <><div>
-      <KommunicateChat />
-    </div><ThemeProvider theme={mdTheme}>
+    <>
+      <div>
+        <KommunicateChat />
+      </div>
+      <ThemeProvider theme={mdTheme}>
         <AuthContext.Provider value={{ isLogin, setLogin }}>
           <BrowserRouter>
             <Routes>
               {/* <Route path="/" element={<SignIn />}></Route> */}
-              <Route path="/login" element={<SignIn />}></Route>
+              <Route path="/" element={<SignIn />}></Route>
               <Route path="/register" element={<Registration />}></Route>
-              <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
-              <Route path="/" element={<LandingPage />}></Route>
+              <Route
+                path="/forgotpassword"
+                element={<ForgotPassword />}
+              ></Route>
+              <Route path="/home" element={<LandingPage />}></Route>
               {/* <Route path="/dashboard" element={<Dashboard />}>
     {routes.map((props) => (
       <Route path={props.path} element={props.element} />
@@ -49,7 +54,8 @@ function App() {
                 <Route
                   key={props.name}
                   path={props.path}
-                  element={props.element} />
+                  element={props.element}
+                />
               ))}
               {/* </RequireAuth> */}
               <Route
@@ -57,12 +63,15 @@ function App() {
                 element={<VisualizationCharts />}
               ></Route>
               <Route path="/reports" element={<Reports />}></Route>
-              <Route path="/reportsquicksight" element={<ReportsQuickSight />}></Route>
+              <Route
+                path="/reportsquicksight"
+                element={<ReportsQuickSight />}
+              ></Route>
             </Routes>
           </BrowserRouter>
         </AuthContext.Provider>
-      </ThemeProvider></>
-    
+      </ThemeProvider>
+    </>
   );
 }
 
